@@ -1,7 +1,7 @@
-// src/app/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const COLORS: { [key: string]: string } = {
   A: "bg-red-400",
@@ -32,53 +32,77 @@ const Page = () => {
       });
   }, []);
 
-  const handlePrev = () => {
-    setIndex((prev) => (prev > 0 ? prev - 1 : prev));
-  };
-
-  const handleNext = () => {
+  const handlePrev = () => setIndex((prev) => (prev > 0 ? prev - 1 : prev));
+  const handleNext = () =>
     setIndex((prev) => (prev < solutions.length - 1 ? prev + 1 : prev));
-  };
 
   const current = solutions[index];
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-6 p-4">
-      <h1 className="text-2xl font-bold">
-        IQ Fit Puzzle - First 100 Solutions
+    <main className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">
+        IQ Fit Puzzle Viewer
       </h1>
+
       {current && (
-        <div className="flex flex-col gap-2 items-center">
-          <h2 className="text-lg font-semibold">Solution #{index + 1}</h2>
-          <div className="grid grid-cols-11 gap-1">
-            {current.map((row, rIdx) =>
-              row.split("").map((char, cIdx) => (
-                <div
-                  key={`${rIdx}-${cIdx}`}
-                  className={`w-6 h-6 text-sm font-semibold text-white flex items-center justify-center rounded ${
-                    COLORS[char] || "bg-gray-800"
-                  }`}
-                >
-                  {char}
-                </div>
-              ))
-            )}
+        <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center gap-6 w-full max-w-5xl">
+          {/* Çözüm numarası */}
+          <span className="text-sm font-medium bg-gray-100 px-4 py-1 rounded-full text-gray-700">
+            Solution #{index + 1} / {solutions.length}
+          </span>
+
+          {/* Puzzle grid */}
+          <div className="p-3 border border-gray-300 rounded-lg bg-gray-50">
+            <div className="grid grid-cols-11 gap-[3px]">
+              {current.map((row, rIdx) =>
+                row.split("").map((char, cIdx) => (
+                  <div
+                    key={`${rIdx}-${cIdx}`}
+                    className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded text-white font-semibold text-sm ${
+                      COLORS[char] || "bg-gray-800"
+                    }`}
+                  >
+                    {char}
+                  </div>
+                ))
+              )}
+            </div>
           </div>
-          <div className="flex gap-4 mt-4">
+
+          {/* Önceki / Sonraki düğmeleri */}
+          <div className="flex gap-6">
             <button
               onClick={handlePrev}
               disabled={index === 0}
-              className="bg-gray-700 hover:bg-gray-600 px-4 py-1 text-white rounded disabled:opacity-40"
+              className="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white px-5 py-2 rounded-lg transition disabled:opacity-40"
             >
-              Previous
+              <ChevronLeft className="w-4 h-4" /> Previous
             </button>
+
             <button
               onClick={handleNext}
               disabled={index === solutions.length - 1}
-              className="bg-gray-700 hover:bg-gray-600 px-4 py-1 text-white rounded disabled:opacity-40"
+              className="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white px-5 py-2 rounded-lg transition disabled:opacity-40"
             >
-              Next
+              Next <ChevronRight className="w-4 h-4" />
             </button>
+          </div>
+
+          {/* Legend */}
+          <div className="mt-4">
+            <h3 className="text-sm font-semibold text-gray-600 mb-2 text-center">
+              Color Legend
+            </h3>
+            <div className="flex flex-wrap justify-center gap-2">
+              {Object.entries(COLORS).map(([key, bg]) => (
+                <div
+                  key={key}
+                  className={`flex items-center gap-1 px-2 py-1 rounded ${bg} text-white text-xs font-medium`}
+                >
+                  {key}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
